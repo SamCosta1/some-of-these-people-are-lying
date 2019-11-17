@@ -7,6 +7,7 @@ import { combineLatest } from 'rxjs';
 import {GameState} from "../../service/models/GameState";
 import {TitleHeaderComponent} from "../components/TitleHeader/TitleHeaderComponent";
 import {CreateJoinGameComponent} from "../components/CreateJoinGame/CreateJoinGame";
+import {MainGameComponent} from "../components/MainGame/MainGameComponent";
 
 interface AppState {
     isLoading: boolean,
@@ -77,7 +78,7 @@ class App extends React.Component<any, AppState> {
                 {
                     !this.state.isLoading && this.state.gameState === GameState.InGame &&
 
-                    <div>In Game</div>
+                    <MainGameComponent />
                 }
                 </div>
             </div>

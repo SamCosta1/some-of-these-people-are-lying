@@ -9,7 +9,6 @@ import {Subject} from "rxjs/internal/Subject";
 import AuthService from "./AuthService";
 import {Player} from "./models/Player";
 import {RawPlayersSnapshot} from "./models/RawGameSnapshot";
-import HttpsCallableResult = firebase.functions.HttpsCallableResult;
 
 class GameService {
 
@@ -42,13 +41,13 @@ class GameService {
         });
     }
 
-    joinGame(name: string): Promise<HttpsCallableResult> {
+    joinGame(name: string): Promise<firebase.functions.HttpsCallableResult> {
         return firebase.functions().httpsCallable("joinGame")({
             gameName: name
         })
     }
 
-    createGame(name: string): Promise<HttpsCallableResult> {
+    createGame(name: string): Promise<firebase.functions.HttpsCallableResult> {
         return firebase.functions().httpsCallable("createAndJoinGame")({
             gameName: name
         })
