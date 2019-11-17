@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './ui/index.css';
-import App from './ui/App';
+import './ui/styles/index.css';
+import './ui/styles/spinner.css';
+import App from './ui/app/App';
 import * as serviceWorker from './serviceWorker';
 import initFirebase from "./build/initFirebase";
 import Injector from "./service/Injector";
