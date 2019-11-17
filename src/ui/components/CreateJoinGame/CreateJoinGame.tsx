@@ -23,11 +23,15 @@ export class CreateJoinGameComponent extends React.Component<any, State> {
     }
 
     private onJoinTapped() {
-        const b =Injector.instance().gameService.joinGame(this.state.gameName)
+        Injector.instance().gameService.joinGame(this.state.gameName).catch(error => {
+            console.log(error);
+        })
     }
 
     private onCreateTapped() {
-        const b =Injector.instance().gameService.createGame(this.state.gameName)
+        Injector.instance().gameService.createGame(this.state.gameName).catch(error => {
+           console.log(error)
+        })
 
     }
 
