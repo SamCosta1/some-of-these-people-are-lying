@@ -1,0 +1,19 @@
+.group-name-input {
+    width: 80vw;
+    height: 50px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+button {
+    width: 30vw;
+    background: #a50a0a;
+    height: 40px;
+    border-radius: 10px;
+    color: white;
+    margin: 10px;
+}
+
+button:hover {
+    background-color: #500202;
+}

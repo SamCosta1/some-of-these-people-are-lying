@@ -67,7 +67,7 @@ class GameService {
     }
 
     private gamePlayersRef(gameId: string): firebase.database.Reference {
-        return this.getRef(`games/${gameId}/players`)
+        return this.getRef(`games/${gameId}/players/ids`)
     }
 
     private userGameRef(userId: string): firebase.database.Reference {

@@ -5,7 +5,8 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {LoggedIn, AuthError} from "../../service/models/AuthState";
 import { combineLatest } from 'rxjs';
 import {GameState} from "../../service/models/GameState";
-import {TitleHeaderComponent} from "../components/titleHeader/TitleHeaderComponent";
+import {TitleHeaderComponent} from "../components/TitleHeader/TitleHeaderComponent";
+import {CreateJoinGameComponent} from "../components/CreateJoinGame/CreateJoinGame";
 
 interface AppState {
     isLoading: boolean,
@@ -56,30 +57,31 @@ class App extends React.Component<any, AppState> {
   render() {
       return (
         <div className="App">
-          <header className="App-header">
-              <TitleHeaderComponent/>
-              <div className="error-container">{this.state.error}</div>
-          </header>
+              <header className="App-header">
+                  <TitleHeaderComponent/>
+                  <div className="error-container">{this.state.error}</div>
+              </header>
 
-            { this.state.isLoading &&
-                <div className="loading-container">
-                    <div className="lds-ripple"><div></div><div></div></div>
+            <div className="main-body">
+                { this.state.isLoading &&
+                    <div className="loading-container">
+                        <div className="lds-ripple"><div></div><div></div></div>
+                    </div>
+                }
+
+                {
+                    !this.state.isLoading && this.state.gameState === GameState.PreGame &&
+                        <CreateJoinGameComponent/>
+                }
+
+                {
+                    !this.state.isLoading && this.state.gameState === GameState.InGame &&
+
+                    <div>In Game</div>
+                }
                 </div>
-            }
+            </div>
 
-            {
-                !this.state.isLoading && this.state.gameState === GameState.PreGame &&
-
-                <div>PreGame</div>
-            }
-
-            {
-                !this.state.isLoading && this.state.gameState === GameState.InGame &&
-
-                <div>In Game</div>
-            }
-        </div>
-          
       );
     }
 }
