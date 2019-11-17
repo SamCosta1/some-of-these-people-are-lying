@@ -1,5 +1,6 @@
 import React from "react";
 import "./CreateJoinGame.css"
+import Injector from "../../../service/Injector";
 
 interface State {
     gameName: string
@@ -12,6 +13,8 @@ export class CreateJoinGameComponent extends React.Component<any, State> {
         super(props);
 
         this.onNameChanged = this.onNameChanged.bind(this);
+        this.onJoinTapped = this.onJoinTapped.bind(this);
+        this.onCreateTapped = this.onCreateTapped.bind(this);
 
         this.state = {
             gameName: '',
@@ -19,12 +22,13 @@ export class CreateJoinGameComponent extends React.Component<any, State> {
         }
     }
 
-    private onJoin() {
-        console.log("On join")
+    private onJoinTapped() {
+        const b =Injector.instance().gameService.joinGame(this.state.gameName)
     }
 
-    private onCreate() {
-        console.log("On create")
+    private onCreateTapped() {
+        const b =Injector.instance().gameService.createGame(this.state.gameName)
+
     }
 
     private onNameChanged(e: any) {
@@ -43,8 +47,8 @@ export class CreateJoinGameComponent extends React.Component<any, State> {
             {
                 this.state.nameValid &&
                 <div>
-                    <button onClick={this.onJoin}>Join Game</button>
-                    <button onClick={this.onCreate}>Create Game</button>
+                    <button onClick={this.onJoinTapped}>Join Game</button>
+                    <button onClick={this.onCreateTapped}>Create Game</button>
                 </div>
             }
 

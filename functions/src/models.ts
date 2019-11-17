@@ -4,9 +4,10 @@ export interface GameRequest {
 }
 
 export interface Game {
+    id: string,
     name: string,
     players: {
         currentGuesserId: string,
-        ids: Map<string, boolean>
+        ids: any
     }
 }

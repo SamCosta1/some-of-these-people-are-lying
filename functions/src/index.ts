@@ -9,27 +9,25 @@ admin.initializeApp();
 export const joinGame = functions.https.onCall(async (request: GameRequest, context: CallableContext) => {
     const uid = validate(request, context);
 
-    const gameSnapshot = await getGameSnapshot(request);
-    const game: Game = gameSnapshot.val();
+    const game: Game | null = await getGameSnapshot(request);
 
-    if (!gameSnapshot || !game || !gameSnapshot.key) {
+    if (!game || !game.id) {
         throw new functions.https.HttpsError('not-found', "That game doesn't exist, why not create it?");
     }
 
-    if (game.players.ids.get(uid)) {
+    if (game.players && game.players.ids && game.players.ids[uid]) {
         throw new functions.https.HttpsError( 'already-exists', 'You\'re already part of that game!')
     }
 
-    return addPlayerToGame(gameSnapshot.key, uid);
-
+    return addPlayerToGame(game.id, uid);
 });
 
 export const createAndJoinGame = functions.https.onCall(async (request: GameRequest, context: CallableContext) => {
     const uid = validate(request, context);
 
-    const gameSnapshot = await getGameSnapshot(request);
+    const game: Game | null = await getGameSnapshot(request);
 
-    if (gameSnapshot && !gameSnapshot.val()) {
+    if (game && game.id) {
         throw new functions.https.HttpsError('already-exists', "That game already exists, why not join it?");
     }
 
@@ -42,8 +40,6 @@ export const createAndJoinGame = functions.https.onCall(async (request: GameRequ
     } else {
         throw new functions.https.HttpsError('unknown', "Failed to create game idk");
     }
-
-
 });
 
 function addPlayerToGame(gameId: string, userId: string) {
@@ -54,8 +50,19 @@ function addPlayerToGame(gameId: string, userId: string) {
 
 }
 
-async function getGameSnapshot(request: GameRequest): Promise<admin.database.DataSnapshot> {
-    return await admin.database().ref('games').orderByChild('name').equalTo(request.gameName).once("value");
+// TODO: Look at this with fresh eyes since surely there's a better way of doing this
+async function getGameSnapshot(request: GameRequest): Promise<Game | null> {
+    const gameSnapshot = await admin.database().ref('games').orderByChild('name').equalTo(request.gameName).limitToFirst(1).once("value");
+    const child = gameSnapshot.val();
+    for (let key in child){
+        if (child.hasOwnProperty(key)){
+            const game = child[key];
+            game.id = key;
+            return game
+        }
+    }
+
+    return null;
 }
 
 // Returns the userId
