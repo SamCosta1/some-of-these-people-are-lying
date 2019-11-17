@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import './ui/index.css';
+import App from './ui/App';
 import * as serviceWorker from './serviceWorker';
+import initFirebase from "./build/initFirebase";
+import Injector from "./service/Injector";
+
+initFirebase();
+Injector.initializeInjector()
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
