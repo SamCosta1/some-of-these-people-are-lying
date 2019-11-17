@@ -5,6 +5,7 @@ import {Subscription} from "rxjs/internal/Subscription";
 import {LoggedIn, AuthError} from "../../service/models/AuthState";
 import { combineLatest } from 'rxjs';
 import {GameState} from "../../service/models/GameState";
+import {TitleHeaderComponent} from "../components/titleHeader/TitleHeaderComponent";
 
 interface AppState {
     isLoading: boolean,
@@ -56,6 +57,7 @@ class App extends React.Component<any, AppState> {
       return (
         <div className="App">
           <header className="App-header">
+              <TitleHeaderComponent/>
               <div className="error-container">{this.state.error}</div>
           </header>
 

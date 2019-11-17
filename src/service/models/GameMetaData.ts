@@ -1,4 +1,3 @@
-import {Player} from "./Player";
 
 export class GameMetaData {
     id: string;
