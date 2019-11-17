@@ -3,6 +3,7 @@ import {GameState} from "./models/GameState";
 import {LoggedIn} from "./models/AuthState";
 import firebase from "firebase/app";
 import "firebase/database"
+import "firebase/functions"
 import {GameMetaData} from "./models/GameMetaData";
 import {Subject} from "rxjs/internal/Subject";
 import AuthService from "./AuthService";
@@ -40,6 +41,14 @@ class GameService {
         });
     }
 
+    async joinGame(name: string) {
+        const result = await firebase.functions().httpsCallable("joinGame")({
+            gameName: name
+        });
+
+        console.log(result);
+    }
+
     private updateGameMeta(gameId: string) {
         this.getRef(`games/${gameId}/name`).on("value", nameSnapshot => {
             this.currentGameMeta.next(new GameMetaData(gameId, nameSnapshot.val()))
@@ -62,7 +71,7 @@ class GameService {
     }
 
     private userGameRef(userId: string): firebase.database.Reference {
-        return this.getRef(`user/${userId}/current-game`);
+        return this.getRef(`users/${userId}/current-game`);
     }
 
     private getRef(refStr: string): firebase.database.Reference {
