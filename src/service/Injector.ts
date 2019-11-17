@@ -4,7 +4,7 @@ import GameService from "./GameService";
 class Injector {
 
     authService = new AuthService();
-    gameService = new GameService();
+    gameService = new GameService(this.authService);
 }
 
 let _injector: Injector;
