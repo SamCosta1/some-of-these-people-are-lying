@@ -2,7 +2,7 @@ import React from 'react';
 import Injector from '../../../service/Injector';
 import {Subscription} from 'rxjs/internal/Subscription';
 import {GameMetaData} from '../../../service/models/GameMetaData';
-import "./TitleHeader.css"
+import "./TitleHeader.scss"
 import {map} from 'rxjs/operators';
 import {Player} from '../../../service/models/Player';
 
