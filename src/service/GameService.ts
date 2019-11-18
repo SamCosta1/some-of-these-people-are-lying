@@ -60,7 +60,7 @@ class GameService {
                         }
                     });
 
-                    this._articles.next(this.currentPlayer.value.isGuesser ? articles : shuffleArray(articles))
+                    this._articles.next(shuffleArray(articles))
                 })
             });
 
