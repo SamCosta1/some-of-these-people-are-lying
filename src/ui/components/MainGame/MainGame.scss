@@ -1,0 +1,32 @@
+
+.article-entry-container {
+  display: flex;
+  flex-direction: column;
+  background-color: #500202;
+  width: 100vw;
+  align-items: center;
+
+  padding: 30px;
+
+  .article-entry {
+    width: 100%;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+
+    input {
+      flex: 4;
+    }
+
+    button {
+      flex: 1;
+    }
+  }
+}
+
+.articles-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

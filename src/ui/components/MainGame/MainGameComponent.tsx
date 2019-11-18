@@ -8,7 +8,9 @@ import {Player} from "../../../service/models/Player";
 
 interface State {
     articles: Article[]
-    player: Player | null
+    player: Player
+    newArticleTitle: string
+    newArticleTitleValid: boolean
 }
 
 export class MainGameComponent extends React.Component<any, State> {
@@ -20,8 +22,12 @@ export class MainGameComponent extends React.Component<any, State> {
 
         this.state = {
             articles: [],
-            player: null
-        }
+            player: Player.EMPTY,
+            newArticleTitle: "",
+            newArticleTitleValid: false
+        };
+
+        this.onNewArticleTitleChanged = this.onNewArticleTitleChanged.bind(this);
     }
 
     componentDidMount() {
@@ -42,14 +48,38 @@ export class MainGameComponent extends React.Component<any, State> {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
+    private onNewArticleTitleChanged(e: any) {
+        const newName: string = e.target.value;
+
+        this.setState({
+            newArticleTitle: newName,
+            newArticleTitleValid: newName.trim().length > 2
+        });
+    }
+
     render() {
         return (
             <div>
-                {
-                    this.state.articles.map(article => <ArticleCardComponent key={`${article.playerId}-${article.title}`}
-                                                                             article={article}
-                                                                             playerCanReveal={this.state.player != null && this.state.player.isGuesser}/>)
+                {   !this.state.player.isGuesser &&
+                    <div className="article-entry-container">
+                        <div className="article-entry">
+                        <input type="text" placeholder="Enter your article name here" value={this.state.newArticleTitle} onChange={this.onNewArticleTitleChanged}/>
+                        {
+                            this.state.newArticleTitleValid &&
+                                <button>Submit / Update article</button>
+                        }
+                        </div>
+                        <div>Or...</div>
+                        <button>Become Tom Scott</button>
+                    </div>
                 }
+                <div className="articles-container">
+                    {
+                        this.state.articles.map(article => <ArticleCardComponent key={`${article.playerId}-${article.title}`}
+                                                                                 article={article}
+                                                                                 playerCanReveal={this.state.player.isGuesser}/>)
+                    }
+                </div>
             </div>
         )
     }

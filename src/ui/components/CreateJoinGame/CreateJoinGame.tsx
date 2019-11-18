@@ -46,7 +46,7 @@ export class CreateJoinGameComponent extends React.Component<any, State> {
 
     render() {
         return <div>
-            <input className="group-name-input" placeholder="Name of your group's game" type="text" value={this.state.gameName} onChange={this.onNameChanged} />
+            <input className="create-join-game-input" placeholder="Name of your group's game" type="text" value={this.state.gameName} onChange={this.onNameChanged} />
 
             {
                 this.state.nameValid &&
