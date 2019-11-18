@@ -20,7 +20,14 @@ export class TitleHeaderComponent extends React.Component<any, State> {
         this.state = {
             titlePrefix: 'Some',
             gameName: ''
-        }
+        };
+
+        this.leaveGame = this.leaveGame.bind(this);
+    }
+
+    private async leaveGame() {
+        await Injector.instance().gameService.leaveGame();
+        window.location.reload();
     }
 
     componentDidMount() {
@@ -51,6 +58,7 @@ export class TitleHeaderComponent extends React.Component<any, State> {
 
     render() {
         return <div>
+            <div className="leave-game" onClick={this.leaveGame}>Leave this game</div>
             <div className="title-game-name">{this.state.gameName}</div>
             <h1>{this.state.titlePrefix} of these people are lying</h1>
         </div>

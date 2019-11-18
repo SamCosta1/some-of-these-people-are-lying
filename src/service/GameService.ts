@@ -118,6 +118,11 @@ class GameService {
         })
     }
 
+    async leaveGame() {
+        this.state.next(GameState.Loading);
+        await firebase.functions().httpsCallable("leaveCurrentGame")();
+    }
+
     private updateGameMeta(gameId: string) {
         this.getRef(`games/${gameId}/name`).on("value", nameSnapshot => {
             this.currentGameMeta.next(new GameMetaData(gameId, nameSnapshot.val()))

@@ -42,6 +42,25 @@ export const createAndJoinGame = functions.https.onCall(async (request: GameRequ
     }
 });
 
+export const leaveCurrentGame = functions.https.onCall(async (request: void, context: CallableContext) => {
+    if (!context || !context.auth || !context.auth.uid) {
+        throw new functions.https.HttpsError('unauthenticated', "Who the hell are you?");
+    }
+
+    const uid = context.auth.uid;
+    const gameSnap = await admin.database().ref(`users/${uid}/current-game`).once('value');
+    const gameId: string = gameSnap.val();
+
+    if (!gameId) {
+        throw new functions.https.HttpsError('not-found', "You're not in a game...");
+    }
+
+    return Promise.all([
+        admin.database().ref(`games/${gameId}/players/ids/${uid}`).remove(),
+        admin.database().ref(`users/${uid}/current-game`).set(null)
+    ]);
+});
+
 function addPlayerToGame(gameId: string, userId: string) {
     return Promise.all([
         admin.database().ref(`games/${gameId}/players/ids/${userId}`).set(true),
