@@ -8,15 +8,21 @@ import {GameMetaData} from "./models/GameMetaData";
 import {Subject} from "rxjs/internal/Subject";
 import AuthService from "./AuthService";
 import {Player} from "./models/Player";
-import {RawPlayersSnapshot} from "./models/RawGameSnapshot";
+import {RawArticleSnapshot, RawPlayersSnapshot} from "./models/RawGameSnapshot";
+import {Article} from "./models/Article";
+import {Subscription} from "rxjs/internal/Subscription";
+import Injector from "./Injector";
+import {shuffleArray} from "../util/ArrayUtils";
 
 class GameService {
 
     state = new BehaviorSubject<GameState>(GameState.Loading);
-    currentGameMeta = new Subject<GameMetaData>();
+    currentGameMeta = new BehaviorSubject<GameMetaData>(GameMetaData.EMPTY);
     players = new Subject<Player[]>();
+    articles = new Subject<Article[]>()
 
     private dbRefs: firebase.database.Reference[] = [];
+    private subscriptions: Subscription[] = [];
 
     constructor(authService: AuthService) {
         authService.authState.subscribe(authState => {
@@ -25,9 +31,10 @@ class GameService {
             }
 
             this.dbRefs.forEach(ref => ref.off());
+            this.subscriptions.forEach(it => it.unsubscribe());
             this.dbRefs = [];
 
-            this.userGameRef(authState.userId).on("value", (gameIdSnapshot => {
+            this.userGameRef(authState.userId).on('value', (gameIdSnapshot => {
                 if (gameIdSnapshot && gameIdSnapshot.val()) {
                     this.updatePlayers(authState, gameIdSnapshot.val());
                     this.updateGameMeta(gameIdSnapshot.val());
@@ -38,6 +45,34 @@ class GameService {
                 }
             }));
 
+            const gameSub = this.currentGameMeta.subscribe((gameMetaData) => {
+                this.articlesRef(gameMetaData.id).on('value', articlesSnapshot => {
+                    let articles: Article[] = [];
+                    articlesSnapshot.forEach(childSnapshot => {
+
+                        if (childSnapshot.key) {
+                            const rawArticle: RawArticleSnapshot = childSnapshot.val();
+                            articles.push(new Article(childSnapshot.key, rawArticle.title, rawArticle.isRevealed,childSnapshot.key === authState.userId))
+                        }
+                    });
+
+                    this.articles.next(shuffleArray(articles))
+                })
+            });
+
+            this.subscriptions.push(gameSub);
+        });
+    }
+
+    updateArticle(article: Article): Promise<any> {
+        const playerId = Injector.instance().authService.playerId;
+        if (this.currentGameMeta.value === GameMetaData.EMPTY || !playerId) {
+            throw Error("Not currently in a game, this should never happen");
+        }
+
+        return this.playerArticleRef(this.currentGameMeta.value.id, playerId).set({
+            title: article.title,
+            isRevealed: article.isRevealed
         });
     }
 
@@ -76,6 +111,14 @@ class GameService {
 
     private userGameRef(userId: string): firebase.database.Reference {
         return this.getRef(`users/${userId}/current-game`);
+    }
+
+    private articlesRef(gameId: string): firebase.database.Reference {
+        return this.getRef(`games/${gameId}/articles`)
+    }
+
+    private playerArticleRef(gameId: string, playerId: string): firebase.database.Reference {
+        return firebase.database().ref(`games/${gameId}/articles/${playerId}`)
     }
 
     private getRef(refStr: string): firebase.database.Reference {

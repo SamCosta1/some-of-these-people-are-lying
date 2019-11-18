@@ -3,9 +3,7 @@ export interface RawPlayersSnapshot {
     currentGuesserId: string
 }
 
-export interface RawArticlesSnapshot {
-    articles: {
-        title: string,
-        playerId: string
-    }[]
+export interface RawArticleSnapshot {
+    title: string,
+    isRevealed: boolean;
 }

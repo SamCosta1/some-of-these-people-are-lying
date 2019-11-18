@@ -1,5 +1,5 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
 import Injector from "../../service/Injector";
 import {Subscription} from "rxjs/internal/Subscription";
 import {LoggedIn, AuthError} from "../../service/models/AuthState";

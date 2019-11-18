@@ -7,4 +7,7 @@ export class GameMetaData {
         this.id = id;
         this.name = name;
     }
+
+    public static EMPTY = new GameMetaData("-", "-")
+
 }

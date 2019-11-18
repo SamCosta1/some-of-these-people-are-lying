@@ -6,11 +6,13 @@ import {AuthError, AuthState, LoggedIn, NotLoggedIn} from "./models/AuthState";
 
 class AuthService {
     authState = new BehaviorSubject<AuthState>(NotLoggedIn);
+    playerId: string | null = null;
 
     constructor() {
         firebase.auth().onAuthStateChanged(currentUser => {
 
             if (currentUser) {
+                this.playerId = currentUser.uid;
                 this.authState.next(new LoggedIn(currentUser.uid))
             } else {
                 this.authState.next(new NotLoggedIn());
