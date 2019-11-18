@@ -1,5 +1,5 @@
 export interface RawPlayersSnapshot {
-    playerIds: string[]
+    ids: string[]
     currentGuesserId: string
 }
 

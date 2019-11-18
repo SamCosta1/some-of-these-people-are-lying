@@ -19,7 +19,8 @@ class GameService {
     state = new BehaviorSubject<GameState>(GameState.Loading);
     currentGameMeta = new BehaviorSubject<GameMetaData>(GameMetaData.EMPTY);
     players = new Subject<Player[]>();
-    articles = new Subject<Article[]>()
+    currentPlayer = new BehaviorSubject<Player>(Player.EMPTY);
+    articles = new Subject<Article[]>();
 
     private dbRefs: firebase.database.Reference[] = [];
     private subscriptions: Subscription[] = [];
@@ -56,11 +57,16 @@ class GameService {
                         }
                     });
 
-                    this.articles.next(shuffleArray(articles))
+                    this.articles.next(this.currentPlayer.value.isGuesser ? articles : shuffleArray(articles))
                 })
             });
 
-            this.subscriptions.push(gameSub);
+            const playersSub = this.players.subscribe(players => {
+                console.log(players);
+                this.currentPlayer.next(players.find(p => p.isThisPlayer) || Player.EMPTY);
+            });
+
+            this.subscriptions.push(gameSub, playersSub);
         });
     }
 
@@ -70,10 +76,15 @@ class GameService {
             throw Error("Not currently in a game, this should never happen");
         }
 
-        return this.playerArticleRef(this.currentGameMeta.value.id, playerId).set({
+        return this.playerArticleRef(this.currentGameMeta.value.id, article.playerId).set({
             title: article.title,
             isRevealed: article.isRevealed
         });
+    }
+
+    revealArticle(article: Article): Promise<any> {
+        article.isRevealed = true;
+        return this.updateArticle(article)
     }
 
     joinGame(name: string): Promise<firebase.functions.HttpsCallableResult> {
@@ -97,8 +108,9 @@ class GameService {
     private updatePlayers(loggedIn: LoggedIn, gameId: string) {
         this.gamePlayersRef(gameId).on("value", (snapshot) => {
             const rawPlayers: RawPlayersSnapshot = snapshot.val();
-            const ids: string[] = rawPlayers.playerIds || [];
+            const ids: string[] = Object.keys(rawPlayers.ids) || [];
 
+            console.log(ids);
             this.players.next(ids.map(id =>
                 new Player(id, id === loggedIn.userId, id === rawPlayers.currentGuesserId)
             ));
@@ -106,7 +118,7 @@ class GameService {
     }
 
     private gamePlayersRef(gameId: string): firebase.database.Reference {
-        return this.getRef(`games/${gameId}/players/ids`)
+        return this.getRef(`games/${gameId}/players`)
     }
 
     private userGameRef(userId: string): firebase.database.Reference {
@@ -126,7 +138,6 @@ class GameService {
         this.dbRefs.push(ref);
         return ref;
     }
-
- }
+}
 
  export default GameService
