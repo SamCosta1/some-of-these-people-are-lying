@@ -28,6 +28,9 @@ export class MainGameComponent extends React.Component<any, State> {
         };
 
         this.onNewArticleTitleChanged = this.onNewArticleTitleChanged.bind(this);
+        this.submitArticle = this.submitArticle.bind(this);
+        this.becomeGuesser = this.becomeGuesser.bind(this);
+        this.shuffle = this.shuffle.bind(this);
     }
 
     componentDidMount() {
@@ -57,6 +60,22 @@ export class MainGameComponent extends React.Component<any, State> {
         });
     }
 
+    private submitArticle() {
+        Injector.instance().gameService.createArticle(this.state.newArticleTitle).catch(e => {
+
+        });
+    }
+
+    private becomeGuesser() {
+        Injector.instance().gameService.becomeGuesser().catch(e => {
+
+        })
+    }
+
+    private shuffle() {
+        Injector.instance().gameService.shuffleArticles()
+    }
+
     render() {
         return (
             <div>
@@ -66,11 +85,18 @@ export class MainGameComponent extends React.Component<any, State> {
                         <input type="text" placeholder="Enter your article name here" value={this.state.newArticleTitle} onChange={this.onNewArticleTitleChanged}/>
                         {
                             this.state.newArticleTitleValid &&
-                                <button>Submit / Update article</button>
+                                <button onClick={this.submitArticle}>Submit / Update article</button>
                         }
                         </div>
                         <div>Or...</div>
-                        <button>Become Tom Scott</button>
+                        <button onClick={this.becomeGuesser}>Become Tom Scott</button>
+                    </div>
+                }
+
+                {
+                    this.state.player.isGuesser &&
+                    <div className="article-entry-container">
+                        <button onClick={this.shuffle}>Shuffle</button>
                     </div>
                 }
                 <div className="articles-container">

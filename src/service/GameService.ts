@@ -20,7 +20,7 @@ class GameService {
     currentGameMeta = new BehaviorSubject<GameMetaData>(GameMetaData.EMPTY);
     players = new Subject<Player[]>();
     currentPlayer = new BehaviorSubject<Player>(Player.EMPTY);
-    articles = new Subject<Article[]>();
+    articles = new BehaviorSubject<Article[]>([]);
 
     private dbRefs: firebase.database.Reference[] = [];
     private subscriptions: Subscription[] = [];
@@ -70,7 +70,7 @@ class GameService {
         });
     }
 
-    updateArticle(article: Article): Promise<any> {
+    private updateArticle(article: Article): Promise<any> {
         const playerId = Injector.instance().authService.playerId;
         if (this.currentGameMeta.value === GameMetaData.EMPTY || !playerId) {
             throw Error("Not currently in a game, this should never happen");
@@ -85,6 +85,18 @@ class GameService {
     revealArticle(article: Article): Promise<any> {
         article.isRevealed = true;
         return this.updateArticle(article)
+    }
+
+    createArticle(newArticleTitle: string): Promise<any> {
+        return this.updateArticle(new Article(this.currentPlayer.value.id, newArticleTitle, false, true))
+    }
+
+    becomeGuesser(): Promise<any> {
+        return this.currentGuesserRef(this.currentGameMeta.value.id).set(this.currentPlayer.value.id)
+    }
+
+    shuffleArticles() {
+        this.articles.next(shuffleArray(this.articles.value))
     }
 
     joinGame(name: string): Promise<firebase.functions.HttpsCallableResult> {
@@ -133,11 +145,16 @@ class GameService {
         return firebase.database().ref(`games/${gameId}/articles/${playerId}`)
     }
 
+    private currentGuesserRef(gameId: string) {
+        return this.getRef(`games/${gameId}/players/currentGuesserId`)
+    }
+
     private getRef(refStr: string): firebase.database.Reference {
         const ref = firebase.database().ref(refStr);
         this.dbRefs.push(ref);
         return ref;
     }
+
 }
 
  export default GameService
