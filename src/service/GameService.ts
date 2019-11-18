@@ -13,6 +13,7 @@ import {Article} from "./models/Article";
 import {Subscription} from "rxjs/internal/Subscription";
 import Injector from "./Injector";
 import {shuffleArray} from "../util/ArrayUtils";
+import { combineLatest } from 'rxjs';
 
 class GameService {
 
@@ -20,6 +21,8 @@ class GameService {
     currentGameMeta = new BehaviorSubject<GameMetaData>(GameMetaData.EMPTY);
     players = new Subject<Player[]>();
     currentPlayer = new BehaviorSubject<Player>(Player.EMPTY);
+
+    private _articles = new BehaviorSubject<Article[]>([]);
     articles = new BehaviorSubject<Article[]>([]);
 
     private dbRefs: firebase.database.Reference[] = [];
@@ -57,17 +60,21 @@ class GameService {
                         }
                     });
 
-                    this.articles.next(this.currentPlayer.value.isGuesser ? articles : shuffleArray(articles))
+                    this._articles.next(this.currentPlayer.value.isGuesser ? articles : shuffleArray(articles))
                 })
             });
 
             const playersSub = this.players.subscribe(players => {
-                console.log(players);
                 this.currentPlayer.next(players.find(p => p.isThisPlayer) || Player.EMPTY);
             });
 
             this.subscriptions.push(gameSub, playersSub);
         });
+        
+        combineLatest([this._articles, this.players], (articles, players) => {
+            const guesser = players.find(player => player.isGuesser) || Player.EMPTY;
+            return articles.filter(article => article.playerId !== guesser.id)
+        }).subscribe(articles => this.articles.next(articles))
     }
 
     private updateArticle(article: Article): Promise<any> {
@@ -96,7 +103,7 @@ class GameService {
     }
 
     shuffleArticles() {
-        this.articles.next(shuffleArray(this.articles.value))
+        this._articles.next(shuffleArray(this._articles.value))
     }
 
     joinGame(name: string): Promise<firebase.functions.HttpsCallableResult> {
