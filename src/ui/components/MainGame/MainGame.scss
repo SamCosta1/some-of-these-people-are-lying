@@ -1,3 +1,4 @@
+@import "../../styles/mediaQueryUtils.scss";
 
 .article-entry-container {
   display: flex;
@@ -7,6 +8,7 @@
   align-items: center;
 
   padding: 30px;
+  margin-bottom: 10px;
 
   .article-entry {
     width: 100%;
@@ -14,13 +16,41 @@
     display: flex;
     align-items: center;
 
-    input {
-      flex: 4;
-    }
 
     button {
-      flex: 1;
+      background-color: darkcyan;
     }
+
+    @mixin large-screen-widths {
+
+      flex-direction: row;
+      justify-content: center;
+
+      input {
+        flex: 5;
+        max-width: 50vw;
+      }
+
+      button {
+        flex: 2;
+      }
+    }
+
+
+    @include respond-to(handhelds) {
+      flex-direction: column;
+
+      input, button {
+        width: 80vw;
+      }
+    }
+    @include respond-to(medium-screens) {
+      @include large-screen-widths
+    }
+    @include respond-to(wide-screens) {
+      @include large-screen-widths
+    }
+
   }
 }
 

@@ -78,8 +78,9 @@ export class MainGameComponent extends React.Component<any, State> {
 
     render() {
         return (
+
             <div>
-                {   !this.state.player.isGuesser &&
+                {   this.state.player !== Player.EMPTY && !this.state.player.isGuesser &&
                     <div className="article-entry-container">
                         <div className="article-entry">
                         <input type="text" placeholder="Enter your article name here" value={this.state.newArticleTitle} onChange={this.onNewArticleTitleChanged}/>
@@ -94,7 +95,7 @@ export class MainGameComponent extends React.Component<any, State> {
                 }
 
                 {
-                    this.state.player.isGuesser &&
+                    this.state.player !== Player.EMPTY && this.state.player.isGuesser &&
                     <div className="article-entry-container">
                         <button onClick={this.shuffle}>Shuffle</button>
                     </div>
