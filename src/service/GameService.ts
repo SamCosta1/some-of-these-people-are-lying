@@ -21,6 +21,7 @@ class GameService {
     currentGameMeta = new BehaviorSubject<GameMetaData>(GameMetaData.EMPTY);
     players = new Subject<Player[]>();
     currentPlayer = new BehaviorSubject<Player>(Player.EMPTY);
+    currentGuesser = new BehaviorSubject<Player>(Player.EMPTY);
 
     private _articles = new BehaviorSubject<Article[]>([]);
     articles = new BehaviorSubject<Article[]>([]);
@@ -75,6 +76,14 @@ class GameService {
             const guesser = players.find(player => player.isGuesser) || Player.EMPTY;
             return articles.filter(article => article.playerId !== guesser.id)
         }).subscribe(articles => this.articles.next(articles))
+
+        this.players.subscribe(players => {
+            const player = players.find(player => player.isGuesser);
+            
+            if (player) {
+                this.currentGuesser.next(player)
+            }
+        })
     }
 
     private updateArticle(article: Article): Promise<any> {
@@ -145,7 +154,6 @@ class GameService {
             const rawPlayers: RawPlayersSnapshot = snapshot.val();
             const ids: string[] = Object.keys(rawPlayers.ids) || [];
 
-            console.log(ids);
             this.players.next(ids.map(id =>
                 new Player(id, id === loggedIn.userId, id === rawPlayers.currentGuesserId)
             ));

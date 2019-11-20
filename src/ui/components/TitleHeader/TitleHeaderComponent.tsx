@@ -4,7 +4,7 @@ import {Subscription} from 'rxjs/internal/Subscription';
 import {GameMetaData} from '../../../service/models/GameMetaData';
 import "./TitleHeader.scss"
 import {map} from 'rxjs/operators';
-import {Player} from '../../../service/models/Player';
+import {Article} from "../../../service/models/Article";
 
 interface State {
     titlePrefix: string,
@@ -39,21 +39,20 @@ export class TitleHeaderComponent extends React.Component<any, State> {
             .currentGameMeta
             .subscribe((gameMeta: GameMetaData) => this.setState({ gameName: gameMeta.name }));
 
-        const playersSub = Injector.instance().gameService
-            .players
+        const articlesSub = Injector.instance().gameService
+            .articles
             .pipe(
-                map((players: Player[]) => players.filter(player => !player.isGuesser).length - 1),
+                map((articles: Article[]) => articles.length - 1),
                 map(numLiars => {
                     if (numLiars <= 1) return 'Some';
                     if (numLiars === 2) return 'Two';
                     if (numLiars === 3) return 'Three';
                     if (numLiars === 4) return 'Four';
                     return 'Many';
-
                 })
             ).subscribe(titlePrefix => this.setState({ titlePrefix }));
 
-        this.subscriptions.push(metaSub, playersSub);
+        this.subscriptions.push(metaSub, articlesSub);
     }
 
     componentWillUnmount() {
