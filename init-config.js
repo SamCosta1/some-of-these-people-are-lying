@@ -7,7 +7,8 @@ if (fs.existsSync("src/build/initFirebase.ts"))  {
     return false;
 }
 
-fs.mkdirSync("src/build")
+fs.rmdirSync("src/build");
+fs.mkdirSync("src/build");
 
 // by default, uses the current project and logged in user
 fbcli.setup.web().then(config => {

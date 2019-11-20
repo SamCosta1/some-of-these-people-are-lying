@@ -18,7 +18,7 @@
     "typescript": "3.7.2"
   },
   "scripts": {
-    "build": "rm src/buid/*; rm -rf build; node init-config.js; react-scripts build",
+    "build": "rm src/build/*; rm -rf build; node init-config.js; react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "start": "node init-config.js; npm run start:react",
