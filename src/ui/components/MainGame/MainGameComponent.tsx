@@ -61,7 +61,12 @@ export class MainGameComponent extends React.Component<any, State> {
     }
 
     private submitArticle() {
-        Injector.instance().gameService.createArticle(this.state.newArticleTitle).catch(e => {
+        Injector.instance().gameService.createArticle(this.state.newArticleTitle).then(() => {
+            this.setState({
+                newArticleTitle: '',
+                newArticleTitleValid: false
+            });
+        }).catch(e => {
             Injector.instance().errorService.pushError("Failed to submit article", e);
         });
     }
