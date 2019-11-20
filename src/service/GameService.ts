@@ -102,8 +102,15 @@ class GameService {
         return this.currentGuesserRef(this.currentGameMeta.value.id).set(this.currentPlayer.value.id)
     }
 
-    shuffleArticles() {
-        this._articles.next(shuffleArray(this._articles.value))
+    revealRandomArticle(): Promise<any> {
+        const numArticles = this._articles.value.length;
+        if (numArticles === 0) {
+            return Promise.reject({ message: "No articles to reveal" })
+        }
+
+        const randIndex = Math.floor(Math.random() * numArticles);
+        const random = this._articles.value[randIndex];
+        return this.revealArticle(random)
     }
 
     joinGame(name: string): Promise<firebase.functions.HttpsCallableResult> {

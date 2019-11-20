@@ -4,8 +4,7 @@ import {Article} from "../../../service/models/Article";
 import Injector from "../../../service/Injector";
 
 interface ArticleProps {
-    article: Article,
-    playerCanReveal: boolean
+    article: Article
 }
 
 export class ArticleCardComponent extends React.Component<ArticleProps, any> {
@@ -27,10 +26,6 @@ export class ArticleCardComponent extends React.Component<ArticleProps, any> {
                 {
                     this.props.article.isRevealed &&
                     <div className="title">{ this.props.article.title }</div>
-                }
-                {
-                    this.props.playerCanReveal && !this.props.article.isRevealed &&
-                        <button onClick={this.reveal}>Reveal</button>
                 }
             </div>
         )

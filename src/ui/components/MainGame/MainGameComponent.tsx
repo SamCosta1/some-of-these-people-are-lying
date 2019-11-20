@@ -30,7 +30,7 @@ export class MainGameComponent extends React.Component<any, State> {
         this.onNewArticleTitleChanged = this.onNewArticleTitleChanged.bind(this);
         this.submitArticle = this.submitArticle.bind(this);
         this.becomeGuesser = this.becomeGuesser.bind(this);
-        this.shuffle = this.shuffle.bind(this);
+        this.revealOne = this.revealOne.bind(this);
     }
 
     componentDidMount() {
@@ -72,8 +72,8 @@ export class MainGameComponent extends React.Component<any, State> {
         })
     }
 
-    private shuffle() {
-        Injector.instance().gameService.shuffleArticles()
+    private revealOne() {
+        Injector.instance().gameService.revealRandomArticle()
     }
 
     render() {
@@ -97,14 +97,13 @@ export class MainGameComponent extends React.Component<any, State> {
                 {
                     this.state.player !== Player.EMPTY && this.state.player.isGuesser &&
                     <div className="article-entry-container">
-                        <button onClick={this.shuffle}>Shuffle</button>
+                        <button onClick={this.revealOne}>Reveal One!</button>
                     </div>
                 }
                 <div className="articles-container">
                     {
                         this.state.articles.map(article => <ArticleCardComponent key={`${article.playerId}-${article.title}`}
-                                                                                 article={article}
-                                                                                 playerCanReveal={this.state.player.isGuesser}/>)
+                                                                                 article={article}/>)
                     }
                 </div>
             </div>
