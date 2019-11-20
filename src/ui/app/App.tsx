@@ -8,6 +8,7 @@ import {GameState} from "../../service/models/GameState";
 import {TitleHeaderComponent} from "../components/TitleHeader/TitleHeaderComponent";
 import {CreateJoinGameComponent} from "../components/CreateJoinGame/CreateJoinGame";
 import {MainGameComponent} from "../components/MainGame/MainGameComponent";
+import { ErrorHandlerComponent } from '../components/Error/ErrorHandlerComponent';
 
 interface AppState {
     isLoading: boolean,
@@ -62,7 +63,7 @@ class App extends React.Component<any, AppState> {
                   <TitleHeaderComponent/>
                   <div className="error-container">{this.state.error}</div>
               </header>
-
+            <ErrorHandlerComponent />
             <div className="main-body">
                 { this.state.isLoading &&
                     <div className="loading-container">

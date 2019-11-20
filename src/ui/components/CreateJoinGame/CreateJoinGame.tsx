@@ -24,13 +24,13 @@ export class CreateJoinGameComponent extends React.Component<any, State> {
 
     private onJoinTapped() {
         Injector.instance().gameService.joinGame(this.state.gameName).catch(error => {
-            console.log(error);
+            Injector.instance().errorService.pushError("Could not join game", error);
         })
     }
 
     private onCreateTapped() {
         Injector.instance().gameService.createGame(this.state.gameName).catch(error => {
-           console.log(error)
+            Injector.instance().errorService.pushError("Could not create game", error);
         })
 
     }

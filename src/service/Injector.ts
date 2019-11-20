@@ -1,10 +1,11 @@
 import AuthService from "./AuthService";
 import GameService from "./GameService";
+import ErrorService from "./ErrorService";
 
 class Injector {
-
     authService = new AuthService();
     gameService = new GameService(this.authService);
+    errorService = new ErrorService();
 }
 
 let _injector: Injector;

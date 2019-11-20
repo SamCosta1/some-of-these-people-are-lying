@@ -17,7 +17,7 @@ export class ArticleCardComponent extends React.Component<ArticleProps, any> {
 
     reveal() {
         Injector.instance().gameService.revealArticle(this.props.article).catch(e => {
-
+            Injector.instance().errorService.pushError("Failed to reveal article", e);
         })
     }
 

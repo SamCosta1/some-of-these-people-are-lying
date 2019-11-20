@@ -26,8 +26,12 @@ export class TitleHeaderComponent extends React.Component<any, State> {
     }
 
     private async leaveGame() {
-        await Injector.instance().gameService.leaveGame();
-        window.location.reload();
+        try {
+            await Injector.instance().gameService.leaveGame();
+            window.location.reload();
+        } catch (e) {
+            Injector.instance().errorService.pushError("Failed to leave game", e);
+        }
     }
 
     componentDidMount() {

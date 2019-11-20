@@ -62,13 +62,13 @@ export class MainGameComponent extends React.Component<any, State> {
 
     private submitArticle() {
         Injector.instance().gameService.createArticle(this.state.newArticleTitle).catch(e => {
-
+            Injector.instance().errorService.pushError("Failed to submit article", e);
         });
     }
 
     private becomeGuesser() {
         Injector.instance().gameService.becomeGuesser().catch(e => {
-
+            Injector.instance().errorService.pushError("Failed to become Tom Scott", e);
         })
     }
 
