@@ -1,0 +1,21 @@
+@import "../../styles/mediaQueryUtils.scss";
+
+.article-card-container {
+  background-color: #bfbfbf;
+  height: 90px;
+  border-radius: 20px;
+  margin-bottom: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @include respond-to(handhelds) { width: 80vw; }
+  @include respond-to(medium-screens) { width: 60vw; }
+  @include respond-to(wide-screens) { width: 30vw; }
+
+  .title {
+    color: black;
+  }
+}
+
