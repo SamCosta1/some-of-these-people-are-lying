@@ -102,6 +102,10 @@ class GameService {
         return this.currentGuesserRef(this.currentGameMeta.value.id).set(this.currentPlayer.value.id)
     }
 
+    removeArticle(article: Article): Promise<any> {
+        return this.playerArticleRef(this.currentGameMeta.value.id, article.playerId).set(null);
+    }
+
     revealRandomArticle(): Promise<any> {
         const numArticles = this._articles.value.length;
         if (numArticles === 0) {

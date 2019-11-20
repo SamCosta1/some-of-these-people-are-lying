@@ -103,7 +103,8 @@ export class MainGameComponent extends React.Component<any, State> {
                 <div className="articles-container">
                     {
                         this.state.articles.map(article => <ArticleCardComponent key={`${article.playerId}-${article.title}`}
-                                                                                 article={article}/>)
+                                                                                 article={article}
+                                                                                 playerCanRemove={this.state.player.isGuesser}/>)
                     }
                 </div>
             </div>
