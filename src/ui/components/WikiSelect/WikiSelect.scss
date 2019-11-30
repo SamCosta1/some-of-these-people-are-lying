@@ -12,6 +12,9 @@
 
   .loading-container {
     height: 150px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
   }
 
   iframe {

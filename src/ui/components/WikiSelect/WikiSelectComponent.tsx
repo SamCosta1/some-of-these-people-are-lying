@@ -30,12 +30,14 @@ export class WikiSelectComponent extends React.Component<Props, State> {
     }
 
     componentDidMount() {
-        Injector.instance().wikiService.article
-            .pipe(
-                filter(article => article !== null)
-            ).subscribe(wikiArticle => {
-                this.setState({ wikiArticle })
-            });
+        this.subscriptions.push(
+            Injector.instance().wikiService.article
+                .pipe(
+                    filter(article => article !== null)
+                ).subscribe(wikiArticle => {
+                    this.setState({ wikiArticle })
+                })
+        );
     }
 
     componentWillUnmount() {
