@@ -32,8 +32,13 @@ button {
   margin: 10px;
 
   cursor: pointer;
+
+  &:hover {
+    background-color: #500202;
+  }
+
+  &[disabled] {
+    background-color: #ab4e4e;
+  }
 }
 
-button:hover {
-  background-color: #500202;
-}

@@ -11,6 +11,7 @@ interface State {
     player: Player
     newArticleTitle: string
     newArticleTitleValid: boolean
+    revealEnabled: boolean
 }
 
 interface Props {
@@ -29,7 +30,8 @@ export class MainGameComponent extends React.Component<Props, State> {
             articles: [],
             player: Player.EMPTY,
             newArticleTitle: "",
-            newArticleTitleValid: false
+            newArticleTitleValid: false,
+            revealEnabled: true
         };
 
         this.onNewArticleTitleChanged = this.onNewArticleTitleChanged.bind(this);
@@ -93,7 +95,15 @@ export class MainGameComponent extends React.Component<Props, State> {
     }
 
     private revealOne() {
-        Injector.instance().gameService.revealRandomArticle()
+        this.setState({ revealEnabled: false });
+
+        Injector.instance().gameService.revealRandomArticle().catch(err => {
+            Injector.instance().errorService.pushError("Couldn't reveal article", err);
+        }).finally(() => {
+            setTimeout(() => {
+                this.setState({ revealEnabled: true});
+            }, 1000)
+        })
     }
 
     render() {
@@ -119,7 +129,7 @@ export class MainGameComponent extends React.Component<Props, State> {
                 {
                     this.state.player !== Player.EMPTY && this.state.player.isGuesser &&
                     <div className="article-entry-container">
-                        <button onClick={this.revealOne}>Reveal One!</button>
+                        <button disabled={!this.state.revealEnabled} onClick={this.revealOne}>Reveal One!</button>
                     </div>
                 }
                 <div className="articles-container">
