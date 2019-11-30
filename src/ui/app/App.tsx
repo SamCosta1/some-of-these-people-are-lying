@@ -9,6 +9,7 @@ import {TitleHeaderComponent} from "../components/TitleHeader/TitleHeaderCompone
 import {CreateJoinGameComponent} from "../components/CreateJoinGame/CreateJoinGame";
 import {MainGameComponent} from "../components/MainGame/MainGameComponent";
 import { ErrorHandlerComponent } from '../components/Error/ErrorHandlerComponent';
+import {WikiSelectComponent} from "../components/WikiSelect/WikiSelectComponent";
 
 interface AppState {
     isLoading: boolean,
@@ -82,7 +83,11 @@ class App extends React.Component<any, AppState> {
                     <MainGameComponent />
                 }
                 </div>
+
+            <div className="wiki-overlay">
+                <WikiSelectComponent />
             </div>
+        </div>
 
       );
     }

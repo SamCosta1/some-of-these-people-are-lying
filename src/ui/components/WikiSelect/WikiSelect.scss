@@ -1,0 +1,12 @@
+.wiki-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .wiki-header {
+    flex: 1;
+  }
+  iframe {
+    flex: 5;
+  }
+}
