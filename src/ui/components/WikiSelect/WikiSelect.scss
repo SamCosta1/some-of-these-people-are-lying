@@ -4,18 +4,22 @@
   height: 100%;
 
   .wiki-header {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-content: center;
+
+    .wiki-buttons {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+    }
+
+    .loading-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
-  .loading-container {
-    height: 150px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-  }
 
   iframe {
     height: 100%;

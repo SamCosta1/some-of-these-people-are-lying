@@ -42,7 +42,7 @@ export class MainGameComponent extends React.Component<Props, State> {
 
     componentDidMount() {
         this.subscriptions.push(
-            Injector.instance().gameService.articles.subscribe(articles => {
+            Injector.instance().gameService.articlesMinusGuessers.subscribe(articles => {
                 this.setState({ articles });
             })
         );

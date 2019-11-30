@@ -60,19 +60,21 @@ export class WikiSelectComponent extends React.Component<Props, State> {
     render() {
         return <div className="wiki-container">
             <div className="wiki-header">
-                <button onClick={this.onRandomizeTapped}>Randomize</button>
+                <div className="wiki-buttons">
+                    <button onClick={this.onRandomizeTapped}>Randomize</button>
 
+                    {
+                        this.state.wikiArticle &&
+                        <button onClick={this.onChooseArticleTapped}>Choose this one!</button>
+                    }
+                </div>
+
+                <div className="loading-container">
                 {
-                    this.state.wikiArticle &&
-                    <button onClick={this.onChooseArticleTapped}>Choose this one!</button>
+                    this.state.isLoading &&
+                    <div className="lds-ripple"><div></div><div></div></div>
                 }
-            </div>
-
-            <div className="loading-container">
-            {
-                this.state.isLoading &&
-                <div className="lds-ripple"><div></div><div></div></div>
-            }
+                </div>
             </div>
 
 
