@@ -1,0 +1,29 @@
+.wiki-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .wiki-header {
+
+    display: flex;
+    
+    .wiki-buttons {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-content: center;
+    }
+
+    .loading-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+
+  iframe {
+    height: 100%;
+  }
+}

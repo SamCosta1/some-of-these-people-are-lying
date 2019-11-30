@@ -11,20 +11,27 @@ interface State {
     player: Player
     newArticleTitle: string
     newArticleTitleValid: boolean
+    revealEnabled: boolean
 }
 
-export class MainGameComponent extends React.Component<any, State> {
+interface Props {
+    chosenArticleTitle: string | null
+    showWikiSelector: () => void
+}
+
+export class MainGameComponent extends React.Component<Props, State> {
 
     private subscriptions: Subscription[] = [];
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
             articles: [],
             player: Player.EMPTY,
             newArticleTitle: "",
-            newArticleTitleValid: false
+            newArticleTitleValid: false,
+            revealEnabled: true
         };
 
         this.onNewArticleTitleChanged = this.onNewArticleTitleChanged.bind(this);
@@ -35,7 +42,7 @@ export class MainGameComponent extends React.Component<any, State> {
 
     componentDidMount() {
         this.subscriptions.push(
-            Injector.instance().gameService.articles.subscribe(articles => {
+            Injector.instance().gameService.articlesMinusGuessers.subscribe(articles => {
                 this.setState({ articles });
             })
         );
@@ -51,9 +58,19 @@ export class MainGameComponent extends React.Component<any, State> {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.chosenArticleTitle && prevProps.chosenArticleTitle !== this.props.chosenArticleTitle) {
+            this.updateArticleTitle(this.props.chosenArticleTitle)
+        }
+    }
+
     private onNewArticleTitleChanged(e: any) {
         const newName: string = e.target.value;
 
+        this.updateArticleTitle(newName);
+    }
+
+    private updateArticleTitle(newName: string) {
         this.setState({
             newArticleTitle: newName,
             newArticleTitleValid: newName.trim().length > 2
@@ -78,7 +95,15 @@ export class MainGameComponent extends React.Component<any, State> {
     }
 
     private revealOne() {
-        Injector.instance().gameService.revealRandomArticle()
+        this.setState({ revealEnabled: false });
+
+        Injector.instance().gameService.revealRandomArticle().catch(err => {
+            Injector.instance().errorService.pushError("Couldn't reveal article", err);
+        }).finally(() => {
+            setTimeout(() => {
+                this.setState({ revealEnabled: true});
+            }, 1000)
+        })
     }
 
     render() {
@@ -95,6 +120,8 @@ export class MainGameComponent extends React.Component<any, State> {
                         }
                         </div>
                         <div>Or...</div>
+                        <button onClick={this.props.showWikiSelector}>Choose from Wikipedia</button>
+                        <div>Or...</div>
                         <button onClick={this.becomeGuesser}>Become Tom Scott</button>
                     </div>
                 }
@@ -102,7 +129,7 @@ export class MainGameComponent extends React.Component<any, State> {
                 {
                     this.state.player !== Player.EMPTY && this.state.player.isGuesser &&
                     <div className="article-entry-container">
-                        <button onClick={this.revealOne}>Reveal One!</button>
+                        <button disabled={!this.state.revealEnabled} onClick={this.revealOne}>Reveal One!</button>
                     </div>
                 }
                 <div className="articles-container">
