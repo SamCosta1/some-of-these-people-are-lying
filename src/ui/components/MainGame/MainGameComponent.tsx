@@ -13,11 +13,16 @@ interface State {
     newArticleTitleValid: boolean
 }
 
-export class MainGameComponent extends React.Component<any, State> {
+interface Props {
+    chosenArticleTitle: string | null
+    showWikiSelector: () => void
+}
+
+export class MainGameComponent extends React.Component<Props, State> {
 
     private subscriptions: Subscription[] = [];
 
-    constructor(props: any) {
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -51,9 +56,19 @@ export class MainGameComponent extends React.Component<any, State> {
         this.subscriptions.forEach(sub => sub.unsubscribe());
     }
 
+    componentDidUpdate(prevProps: Props) {
+        if (this.props.chosenArticleTitle && prevProps.chosenArticleTitle !== this.props.chosenArticleTitle) {
+            this.updateArticleTitle(this.props.chosenArticleTitle)
+        }
+    }
+
     private onNewArticleTitleChanged(e: any) {
         const newName: string = e.target.value;
 
+        this.updateArticleTitle(newName);
+    }
+
+    private updateArticleTitle(newName: string) {
         this.setState({
             newArticleTitle: newName,
             newArticleTitleValid: newName.trim().length > 2
@@ -94,6 +109,8 @@ export class MainGameComponent extends React.Component<any, State> {
                                 <button onClick={this.submitArticle}>Submit / Update article</button>
                         }
                         </div>
+                        <div>Or...</div>
+                        <button onClick={this.props.showWikiSelector}>Choose from Wikipedia</button>
                         <div>Or...</div>
                         <button onClick={this.becomeGuesser}>Become Tom Scott</button>
                     </div>

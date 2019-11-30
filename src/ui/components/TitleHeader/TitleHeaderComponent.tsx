@@ -48,6 +48,8 @@ export class TitleHeaderComponent extends React.Component<any, State> {
                     if (numLiars === 2) return 'Two';
                     if (numLiars === 3) return 'Three';
                     if (numLiars === 4) return 'Four';
+                    if (numLiars === 5) return 'Five';
+                    if (numLiars === 6) return 'Six';
                     return 'Many';
                 })
             ).subscribe(titlePrefix => this.setState({ titlePrefix }));

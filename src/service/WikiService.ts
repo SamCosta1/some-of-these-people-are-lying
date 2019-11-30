@@ -1,8 +1,12 @@
-import { Subject } from 'rxjs';
 import {RawWikiArtice, WikiArticle} from "./models/Wiki";
+import {BehaviorSubject} from "rxjs/internal/BehaviorSubject";
 
 class WikiService {
-    article = new Subject<WikiArticle>();
+    article = new BehaviorSubject<WikiArticle | null>(null);
+
+    constructor() {
+        this.fetchArticle()
+    }
 
     fetchArticle(): Promise<WikiArticle> {
          return fetch("https://en.wikipedia.org/api/rest_v1/page/random/summary")

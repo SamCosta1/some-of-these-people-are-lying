@@ -4,9 +4,17 @@
   height: 100%;
 
   .wiki-header {
-    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
   }
+
+  .loading-container {
+    height: 150px;
+  }
+
   iframe {
-    flex: 5;
+    height: 100%;
   }
 }
