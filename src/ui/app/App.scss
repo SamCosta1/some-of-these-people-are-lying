@@ -7,9 +7,17 @@
   align-items: center;
   font-size: calc(10px + 2vmin);
   color: white;
+
+  .wiki-overlay {
+    position: absolute;
+    background: rgba(0, 40, 44, 0.97);
+    height: 100vh;
+    width: 100vw;
+  }
 }
 
 
 .App-link {
   color: #09d3ac;
 }
+

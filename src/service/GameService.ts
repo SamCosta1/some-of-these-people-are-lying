@@ -24,7 +24,7 @@ class GameService {
     currentGuesser = new BehaviorSubject<Player>(Player.EMPTY);
 
     private _articles = new BehaviorSubject<Article[]>([]);
-    articles = new BehaviorSubject<Article[]>([]);
+    articlesMinusGuessers = new BehaviorSubject<Article[]>([]);
 
     private dbRefs: firebase.database.Reference[] = [];
     private subscriptions: Subscription[] = [];
@@ -75,7 +75,7 @@ class GameService {
         combineLatest([this._articles, this.players], (articles, players) => {
             const guesser = players.find(player => player.isGuesser) || Player.EMPTY;
             return articles.filter(article => article.playerId !== guesser.id)
-        }).subscribe(articles => this.articles.next(articles))
+        }).subscribe(articles => this.articlesMinusGuessers.next(articles))
 
         this.players.subscribe(players => {
             const player = players.find(player => player.isGuesser);
@@ -116,13 +116,15 @@ class GameService {
     }
 
     revealRandomArticle(): Promise<any> {
-        const numArticles = this._articles.value.length;
+        const articles = this.articlesMinusGuessers.value.filter(article => !article.isRevealed);
+        const numArticles = articles.length;
+        console.log(numArticles);
         if (numArticles === 0) {
             return Promise.reject({ message: "No articles to reveal" })
         }
 
         const randIndex = Math.floor(Math.random() * numArticles);
-        const random = this._articles.value[randIndex];
+        const random = articles[randIndex];
         return this.revealArticle(random)
     }
 

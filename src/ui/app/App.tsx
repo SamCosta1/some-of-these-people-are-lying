@@ -9,12 +9,17 @@ import {TitleHeaderComponent} from "../components/TitleHeader/TitleHeaderCompone
 import {CreateJoinGameComponent} from "../components/CreateJoinGame/CreateJoinGame";
 import {MainGameComponent} from "../components/MainGame/MainGameComponent";
 import { ErrorHandlerComponent } from '../components/Error/ErrorHandlerComponent';
+import {WikiSelectComponent} from "../components/WikiSelect/WikiSelectComponent";
+import {WikiArticle} from "../../service/models/Wiki";
 
 interface AppState {
     isLoading: boolean,
     gameState: GameState
     error: string
+    wikiArticleTitle: string | null
+    choosingWikiArticle: boolean
 }
+
 class App extends React.Component<any, AppState> {
 
   subscriptions: Subscription[] = [];
@@ -25,8 +30,13 @@ class App extends React.Component<any, AppState> {
       this.state = {
           isLoading: false,
           error: "",
-          gameState: GameState.Loading
-      }
+          gameState: GameState.Loading,
+          choosingWikiArticle: false,
+          wikiArticleTitle: null
+      };
+
+      this.onWikiClosed = this.onWikiClosed.bind(this);
+      this.showWikiSelector = this.showWikiSelector.bind(this);
   }
 
   componentDidMount() {
@@ -56,6 +66,18 @@ class App extends React.Component<any, AppState> {
      this.subscriptions.forEach((sub) => sub.unsubscribe() );
   }
 
+  onWikiClosed(chosenArticle: WikiArticle | null) {
+      this.setState({ choosingWikiArticle: false });
+
+      if (chosenArticle) {
+          this.setState({ wikiArticleTitle: chosenArticle.title });
+      }
+  }
+
+  private showWikiSelector() {
+      this.setState({ choosingWikiArticle: true })
+  }
+
   render() {
       return (
         <div className="App">
@@ -79,10 +101,18 @@ class App extends React.Component<any, AppState> {
                 {
                     !this.state.isLoading && this.state.gameState === GameState.InGame &&
 
-                    <MainGameComponent />
+                    <MainGameComponent chosenArticleTitle={this.state.wikiArticleTitle}
+                                       showWikiSelector={this.showWikiSelector}/>
                 }
                 </div>
-            </div>
+
+            {
+               this.state.choosingWikiArticle &&
+                <div className="wiki-overlay">
+                    <WikiSelectComponent close={this.onWikiClosed} />
+                </div>
+            }
+        </div>
 
       );
     }
